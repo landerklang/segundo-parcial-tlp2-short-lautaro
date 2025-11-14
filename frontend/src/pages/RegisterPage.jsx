@@ -1,9 +1,43 @@
-import { Link } from "react-router";
-
+import { Form, Link, useNavigate } from "react-router";
+import { useForm } from "../hooks/useForm";
+import { useState } from "react";
 export const RegisterPage = () => {
+  const { formState, handleChange, handleReset } = useForm({
+    username: "",
+    email: "",
+    password: "",
+    Name: "",
+    lastname: "",
+  });
+  const [Loading, setloading] = useState(false);
+  const navigate = useNavigate();
+
   // TODO: Integrar lógica de registro aquí
   // TODO: Implementar useForm para el manejo del formulario
   // TODO: Implementar función handleSubmit
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setloading(true);
+    try {
+      const res = await fetch("http://localhost:3000/api/register", {
+        method: "POST",
+        body: JSON.stringify(formState),
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      const data = await res.json();
+      console.log(data);
+      if (!res.ok) {
+        // setError(true);
+        handleReset();
+      } else {
+        setloading(false);
+        navigate("/home");
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-8">
@@ -19,7 +53,7 @@ export const RegisterPage = () => {
           </p>
         </div>
 
-        <form onSubmit={(event) => {}}>
+        <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
               htmlFor="username"
@@ -31,6 +65,8 @@ export const RegisterPage = () => {
               type="text"
               id="username"
               name="username"
+              value={Form.username}
+              onChange={handleChange}
               placeholder="Elige un nombre de usuario"
               className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-2 focus:ring-green-500"
               required
@@ -48,6 +84,8 @@ export const RegisterPage = () => {
               type="email"
               id="email"
               name="email"
+              value={Form.email}
+              onChange={handleChange}
               placeholder="tu@email.com"
               className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-2 focus:ring-green-500"
               required
@@ -65,6 +103,8 @@ export const RegisterPage = () => {
               type="password"
               id="password"
               name="password"
+              value={Form.password}
+              onChange={handleChange}
               placeholder="Crea una contraseña segura"
               className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-2 focus:ring-green-500"
               required
@@ -82,6 +122,8 @@ export const RegisterPage = () => {
               type="text"
               id="name"
               name="name"
+              value={Form.Name}
+              onChange={handleChange}
               placeholder="Tu nombre"
               className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-2 focus:ring-green-500"
               required
@@ -99,6 +141,8 @@ export const RegisterPage = () => {
               type="text"
               id="lastname"
               name="lastname"
+              value={Form.lastname}
+              onChange={handleChange}
               placeholder="Tu apellido"
               className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-2 focus:ring-green-500"
               required
