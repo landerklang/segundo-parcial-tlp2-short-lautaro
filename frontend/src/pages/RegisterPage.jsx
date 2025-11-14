@@ -32,7 +32,7 @@ export const RegisterPage = () => {
         handleReset();
       } else {
         setloading(false);
-        navigate("/home");
+        navigate("/login");
       }
     } catch (error) {
       alert(error.message);
